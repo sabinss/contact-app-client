@@ -6,6 +6,8 @@ import { fetchContacts } from "../redux/actions/contact";
 import Contact from "../components/Contact";
 import Button from "react-bootstrap/Button";
 import { useNavigate } from "react-router-dom";
+import Alert from "react-bootstrap/Alert";
+import { RESET_STATE } from "../redux/types";
 
 export const Dashboard = () => {
   const dispatch = useDispatch();
@@ -13,12 +15,25 @@ export const Dashboard = () => {
 
   const [search, setSearch] = useState("");
 
-  const { loading, contacts } = useSelector((state) => state.contactReducer);
+  const { loading, contacts, deleteContactSuccess, deleteContact } =
+    useSelector((state) => state.contactReducer);
   console.log("contacgts", contacts);
 
   useEffect(() => {
-    dispatch(fetchContacts());
+    console.log("contacts---", contacts);
+    if (contacts.length == 0) {
+      dispatch(fetchContacts());
+    }
   }, []);
+
+  useEffect(() => {
+    if (deleteContactSuccess) {
+      window.scrollTo(0, 0);
+      setTimeout(() => {
+        dispatch({ type: RESET_STATE });
+      }, 3000);
+    }
+  }, [deleteContactSuccess]);
 
   if (loading) {
     return (
@@ -38,7 +53,20 @@ export const Dashboard = () => {
   return (
     <div>
       <Header />
+
       <section className="container">
+        {deleteContactSuccess && (
+          <Alert
+            key={"success"}
+            variant={"success"}
+            onClose={() => {
+              dispatch({ type: RESET_STATE });
+            }}
+            dismissible
+          >
+            Contact Deleted successfully.
+          </Alert>
+        )}
         <h1 className="large text-primary">Your Contacts</h1>
         <p className="lead">
           <i className="fab fa-connectdevelop" /> Find your contacts developers
@@ -64,11 +92,13 @@ export const Dashboard = () => {
             Add Contact
           </Button>
         </div>
-        <Contact
-          contacts={contacts.filter((contact) =>
-            contact.name.toLowerCase().includes(search)
-          )}
-        />
+        {contacts && (
+          <Contact
+            contacts={contacts.filter((contact) =>
+              contact.name.toLowerCase().includes(search)
+            )}
+          />
+        )}
       </section>
     </div>
   );

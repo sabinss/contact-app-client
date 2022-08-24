@@ -10,7 +10,7 @@ import { login } from "./../redux/actions/auth";
 import { connect, useDispatch } from "react-redux";
 import Spinner from "react-bootstrap/Spinner";
 
-const Login = ({ isLoading }) => {
+const Login = ({ isLoading, errMsg = "" }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -27,6 +27,11 @@ const Login = ({ isLoading }) => {
 
   return (
     <div className="loginForm">
+      {errMsg ? (
+        <Alert key={"danger"} variant={"danger"}>
+          {errMsg}
+        </Alert>
+      ) : null}
       <Form>
         <Form.Group className="mb-3" controlId="formBasicEmail">
           <Form.Label>Email address</Form.Label>
@@ -58,11 +63,7 @@ const Login = ({ isLoading }) => {
         <Form.Text className="text-muted">
           Don't have account, Register here.
         </Form.Text>
-        {/* {errors ? (
-          <Alert key={"danger"} variant={"danger"}>
-            {errors[0]?.msg ?? "Something went wrong"}
-          </Alert>
-        ) : null} */}
+
         <Button variant="primary" type="submit" className="loginBtn">
           Register
         </Button>
@@ -77,7 +78,8 @@ Login.prototypes = {
 const mapStateToProps = (state) => {
   console.log("state", state);
   return {
-    isLoading: state.authReducer.loading
+    isLoading: state.authReducer.loading,
+    errMsg: state.authReducer.errMsg
   };
 };
 

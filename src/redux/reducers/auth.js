@@ -2,7 +2,7 @@ import { LOGIN, LOGIN_FAILUER, LOADING } from "../types";
 
 const initialState = {
   isAuthenticated: false,
-  errors: null,
+  errMsg: null,
   user: null,
   loading: false
 };
@@ -10,10 +10,20 @@ const initialState = {
 const authReducer = (state = initialState, action) => {
   switch (action.type) {
     case LOGIN:
-      return { ...state, isAuthenticated: true, user: action.paylaod };
+      return {
+        ...state,
+        isAuthenticated: true,
+        user: action.paylaod,
+        errMsg: null
+      };
 
     case LOGIN_FAILUER:
-      return { ...state, isAuthenticated: false, loading: false };
+      return {
+        ...state,
+        isAuthenticated: false,
+        loading: false,
+        errMsg: action.payload
+      };
 
     case LOADING:
       return { ...state, loading: action.payload };

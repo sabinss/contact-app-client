@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Header from "../components/Header";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
@@ -14,19 +14,34 @@ import { RESET_STATE } from "../redux/types";
 export const AddContact = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { loading, errMsg } = useSelector((state) => state.contactReducer);
+  const [isContactCreated, setContactCreated] = useState(false);
+  const { creatingContact, errMsg } = useSelector(
+    (state) => state.contactReducer
+  );
   const [initialValues, setInitialValues] = useState({
-    name: "sdf",
-    email: "sdfsdf@gmail.com",
-    phonenumber: "2334444444",
-    address: "sdfdsf"
+    name: "",
+    email: "",
+    phonenumber: "",
+    address: ""
   });
 
-  console.log("errmessage", errMsg);
   return (
     <>
       <Header />
       <section className="container" style={{ marginTop: 70 }}>
+        {isContactCreated && (
+          <Alert
+            key={"success"}
+            variant={"success"}
+            onClose={() => {
+              setContactCreated(false);
+            }}
+            dismissible
+          >
+            Contact Added successfully.
+          </Alert>
+        )}
+
         <div
           style={{
             display: "flex",
@@ -59,7 +74,11 @@ export const AddContact = () => {
           validationSchema={AddContactSchema}
           onSubmit={(values, { resetForm }) => {
             console.log("values", values);
-            dispatch(createContact(values, navigate));
+            dispatch(
+              createContact(values, (success) => {
+                setContactCreated(true);
+              })
+            );
           }}
         >
           {({
@@ -143,7 +162,7 @@ export const AddContact = () => {
                   handleSubmit(values);
                 }}
               >
-                Create
+                Create {creatingContact ?? "...loading"}
               </Button>
             </Form>
           )}
