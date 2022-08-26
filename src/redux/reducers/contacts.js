@@ -14,7 +14,10 @@ import {
   GET_CONTACT_BY_ID_SUCCESS,
   GET_CONTACT_BY_ID_FAILURE,
   UPDATE_CONTACTS_SUCCESS,
-  UPDATE_CONTACTS_FAILURE
+  UPDATE_CONTACTS_FAILURE,
+  UPDATE_CONTACT,
+  MAKE_FAVOURITE_CONTACT,
+  UPDATE_PROFILE_PIC
 } from "../types";
 
 const initialState = {
@@ -33,6 +36,7 @@ const initialState = {
   contactByIdSuccess: false,
   contactByIdFailure: null,
 
+  updateContact: false,
   updateContactSuccess: false,
   updateContactFailure: false
 };
@@ -49,7 +53,10 @@ const contactReducer = (state = initialState, action) => {
       return {
         ...state,
         loading: false,
-        contacts: action.payload,
+        contacts: action.payload.map((contact) => ({
+          ...contact,
+          isFavourite: contact?.isFavourite ? contact?.isFavourite : false
+        })),
         errMsg: null,
         deleteContactSuccess: false,
         deleteContact: false
@@ -62,7 +69,10 @@ const contactReducer = (state = initialState, action) => {
         deleteContact: false,
         deleteContactSuccess: false,
         creatingContact: false,
-        createContactSuccess: false
+        createContactSuccess: false,
+        updateContact: false,
+        updateContactSuccess: false,
+        updateContactFailure: null
       };
     }
 
@@ -126,10 +136,19 @@ const contactReducer = (state = initialState, action) => {
         contactByIdFailure: action.payload
       };
     }
-
+    case UPDATE_CONTACT: {
+      return {
+        ...state,
+        updateContact: true,
+        updateContactSuccess: false,
+        updateContactFailure: null
+      };
+    }
     case UPDATE_CONTACTS_SUCCESS: {
       return {
         ...state,
+        contact: action.payload,
+        updateContact: false,
         updateContactSuccess: true,
         updateContactFailure: null
       };
@@ -138,8 +157,27 @@ const contactReducer = (state = initialState, action) => {
     case UPDATE_CONTACTS_FAILURE: {
       return {
         ...state,
+        updateContact: false,
         updateContactSuccess: false,
         updateContactFailure: true
+      };
+    }
+
+    case MAKE_FAVOURITE_CONTACT: {
+      // const cloneContacts = [...state.contacts];
+      // const index = state.contacts.findIndex(
+      //   (contact) => contact._id === action.payload._id
+      // );
+      console.log("index", action.payload);
+      return {
+        ...state,
+        contacts: [...action.payload]
+      };
+    }
+    case UPDATE_PROFILE_PIC: {
+      return {
+        ...state,
+        contacts: [...action.payload]
       };
     }
     default:

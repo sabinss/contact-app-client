@@ -14,7 +14,9 @@ import {
   GET_CONTACT_BY_ID_SUCCESS,
   UPDATE_CONTACT,
   UPDATE_CONTACTS_SUCCESS,
-  UPDATE_CONTACTS_FAILURE
+  UPDATE_CONTACTS_FAILURE,
+  MAKE_FAVOURITE_CONTACT,
+  UPDATE_PROFILE_PIC
 } from "../types";
 
 import axios from "../../api/axios";
@@ -54,7 +56,7 @@ export const updateContact = (payload, callback) => async (dispatch) => {
     const response = await axios.get("/api/contacts");
     dispatch({
       type: UPDATE_CONTACTS_SUCCESS,
-      payload: response.data.contacts
+      payload: payload
     });
     callback(true);
   } catch (err) {
@@ -88,4 +90,31 @@ export const getContactById = (id, callback) => async (dispatch) => {
       payload: error ?? "Something went wrong"
     });
   }
+};
+
+export const makeFavouriteContact = (id, isFavourite) => async (dispatch) => {
+  try {
+    console.log("markFavourite", isFavourite);
+    const response = await axios.post(`/api/contacts/favourite/${id}`, {
+      isFavourite
+    });
+    console.log("contact favaorte", response.data.contacts);
+    dispatch({
+      type: MAKE_FAVOURITE_CONTACT,
+      payload: response.data.contacts
+    });
+  } catch (error) {}
+};
+
+export const updateProfilePic = (id, profileUrl) => async (dispatch) => {
+  try {
+    const response = await axios.put(`/api/contacts/profile/${id}`, {
+      profileUrl
+    });
+    console.log("contact favaorte", response.data.contacts);
+    dispatch({
+      type: UPDATE_PROFILE_PIC,
+      payload: response.data.contacts
+    });
+  } catch (error) {}
 };

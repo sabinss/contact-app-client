@@ -24,8 +24,8 @@ export const EditContact = () => {
   const {
     contact,
     contactById,
-    contactByIdSuccess,
-    contactByIdFailure,
+    updateContact: isLoading,
+    updateContactSuccess,
     errMsg
   } = useSelector((state) => state.contactReducer);
   const params = useParams();
@@ -48,18 +48,18 @@ export const EditContact = () => {
       <Header />
       <section className="container" style={{ marginTop: 70 }}>
         <h1>Edit Contact</h1>
-        {/* {contactByIdSuccess && (
+        {updateContactSuccess && (
           <Alert
             key={"success"}
             variant={"success"}
             onClose={() => {
-              setContactCreated(false);
+              dispatch({ type: RESET_STATE });
             }}
             dismissible
           >
             Contact Updated successfully.
           </Alert>
-        )} */}
+        )}
 
         {errMsg && (
           <Alert
@@ -184,7 +184,7 @@ export const EditContact = () => {
                     handleSubmit(values);
                   }}
                 >
-                  Update {contactById ?? "...loading"}
+                  Update {isLoading ?? "...loading"}
                 </Button>
               </Form>
             </>
