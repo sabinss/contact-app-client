@@ -17,10 +17,8 @@ export const Dashboard = () => {
 
   const { loading, contacts, deleteContactSuccess, deleteContact } =
     useSelector((state) => state.contactReducer);
-  console.log("contacgts", contacts);
 
   useEffect(() => {
-    console.log("contacts---", contacts);
     if (contacts.length == 0) {
       dispatch(fetchContacts());
     }

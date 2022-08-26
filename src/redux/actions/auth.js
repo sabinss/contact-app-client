@@ -10,7 +10,6 @@ export const login = (payload, navigate) => async (dispatch) => {
     dispatch({ type: LOGIN_SUCCESS, payload: response.data.user });
     navigate("/dashboard");
   } catch (err) {
-    console.log("error", err);
     const errorMessage = err?.response.data?.errors[0]?.msg;
     dispatch({
       type: LOGIN_FAILUER,

@@ -5,8 +5,9 @@ import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import { useDispatch } from "react-redux";
-
+import { useNavigate, useParams } from "react-router-dom";
 import { MdDeleteOutline } from "react-icons/md";
+import { BiEdit } from "react-icons/bi";
 import Profile from "../assets/images/images.png";
 import { deleteContact } from "../redux/actions/contact";
 
@@ -14,6 +15,8 @@ const ContactItem = ({ contact }) => {
   const { name, address, email, phonenumber, _id } = contact;
 
   const dispatch = useDispatch();
+
+  const navigate = useNavigate();
 
   return (
     <div className="contact bg-light">
@@ -46,14 +49,22 @@ const ContactItem = ({ contact }) => {
                   marginTop: 10
                 }}
               >
-                <MdDeleteOutline
-                  size={30}
-                  color="red"
+                <div
+                  style={{ marginRight: 20 }}
                   onClick={() => {
-                    console.log("delete clicked", _id);
                     dispatch(deleteContact(_id));
                   }}
-                />
+                >
+                  <MdDeleteOutline size={30} color="red" />
+                </div>
+                <div
+                  style={{ paddingLeft: 10 }}
+                  onClick={() => {
+                    navigate(`/edit-contact/${_id}`);
+                  }}
+                >
+                  <BiEdit size={30} color="blue" onClick={() => {}} />
+                </div>
               </Col>
             </Row>
           </Col>

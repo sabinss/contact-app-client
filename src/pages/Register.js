@@ -10,36 +10,19 @@ import { login } from "./../redux/actions/auth";
 import { connect, useDispatch } from "react-redux";
 import Spinner from "react-bootstrap/Spinner";
 
-const Login = ({ isLoading, errMsg = "" }) => {
+const Register = ({ isLoading, errMsg = "" }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [emailErr, setEmailErr] = useState(null);
-  const [passwordErr, setPasswordErr] = useState(null);
 
-  function validateEmail(email) {
-    var re = /\S+@\S+\.\S+/;
-    return re.test(email);
-  }
   const onSubmit = async (event) => {
     event.preventDefault();
 
-    if (!password) {
-      setPasswordErr("Please enter password");
-    }
-
-    if (!email) {
-      setEmailErr("Please enter Email");
-    }
     if (email && password) {
       dispatch(login({ email, password }, navigate));
     }
-  };
-
-  const ErrorMsg = ({ errMsg }) => {
-    return <span style={{ color: "red" }}>{errMsg}</span>;
   };
 
   return (
@@ -50,25 +33,15 @@ const Login = ({ isLoading, errMsg = "" }) => {
         </Alert>
       ) : null}
 
-      <h1 style={{ textAlign: "center", marginBottom: 20 }}>
-        Contact Manager App
-      </h1>
+      <h1 style={{ textAlign: "center", marginBottom: 20 }}>Register</h1>
       <Form>
         <Form.Group className="mb-3" controlId="formBasicEmail">
           <Form.Label>Email address</Form.Label>
           <Form.Control
             type="email"
             placeholder="Enter email"
-            onChange={(event) => {
-              if (!validateEmail(event.target.value)) {
-                setEmailErr("Invalid Email");
-              } else {
-                setEmailErr(null);
-              }
-              setEmail(event.target.value);
-            }}
+            onChange={(event) => setEmail(event.target.value)}
           />
-          {emailErr && <ErrorMsg errMsg={emailErr} />}
         </Form.Group>
 
         <Form.Group className="mb-3" controlId="formBasicPassword">
@@ -76,16 +49,8 @@ const Login = ({ isLoading, errMsg = "" }) => {
           <Form.Control
             type="password"
             placeholder="Password"
-            onChange={(event) => {
-              if (event.target.value) {
-                setPasswordErr(null);
-                setPassword(event.target.value);
-              } else {
-                setPasswordErr("Please enter password");
-              }
-            }}
+            onChange={(event) => setPassword(event.target.value)}
           />
-          {passwordErr && <ErrorMsg errMsg={passwordErr} />}
         </Form.Group>
 
         <Button
@@ -109,7 +74,7 @@ const Login = ({ isLoading, errMsg = "" }) => {
   );
 };
 
-Login.prototypes = {
+Register.prototypes = {
   isLoading: PropTypes.bool
 };
 const mapStateToProps = (state) => {
@@ -119,4 +84,4 @@ const mapStateToProps = (state) => {
   };
 };
 
-export default connect(mapStateToProps, null)(Login);
+export default connect(mapStateToProps, null)(Register);

@@ -9,7 +9,12 @@ import {
   LOADING_CONTACTS,
   DELETE_CONTACT_SUCCESS,
   DELETE_CONTACT,
-  CREATE_CONTACT
+  CREATE_CONTACT,
+  GET_CONTACT_BY_ID,
+  GET_CONTACT_BY_ID_SUCCESS,
+  GET_CONTACT_BY_ID_FAILURE,
+  UPDATE_CONTACTS_SUCCESS,
+  UPDATE_CONTACTS_FAILURE
 } from "../types";
 
 const initialState = {
@@ -21,11 +26,18 @@ const initialState = {
   createContactSuccess: false,
 
   deleteContact: false,
-  deleteContactSuccess: false
+  deleteContactSuccess: false,
+
+  contact: {},
+  contactById: false,
+  contactByIdSuccess: false,
+  contactByIdFailure: null,
+
+  updateContactSuccess: false,
+  updateContactFailure: false
 };
 
 const contactReducer = (state = initialState, action) => {
-  console.log("createREducer", action);
   switch (action.type) {
     case FETCH_CONTACTS:
       return { ...state, contacts: action.payload };
@@ -58,7 +70,6 @@ const contactReducer = (state = initialState, action) => {
       return { ...state, creatingContact: true, createContactSuccess: false };
     }
     case CREATE_CONTACTS_SUCCESS:
-      console.log("contacts reducer", state.contacts);
       return {
         ...state,
         loading: false,
@@ -78,7 +89,6 @@ const contactReducer = (state = initialState, action) => {
     case DELETE_CONTACT:
       return { ...state, deleteContact: true, deleteContactSuccess: false };
     case DELETE_CONTACT_SUCCESS:
-      console.log("action.payload", action.payload);
       const updatedContactList = state.contacts.filter(
         (contact) => contact._id !== action.payload
       );
@@ -89,7 +99,49 @@ const contactReducer = (state = initialState, action) => {
         deleteContact: false,
         deleteContactSuccess: true
       };
+    case GET_CONTACT_BY_ID: {
+      return {
+        ...state,
+        contact: {},
+        contactById: true,
+        contactByIdSuccess: false,
+        contactByIdFailure: null
+      };
+    }
+    case GET_CONTACT_BY_ID_SUCCESS: {
+      return {
+        ...state,
+        contact: action.payload,
+        contactById: false,
+        contactByIdSuccess: true,
+        contactByIdFailure: null
+      };
+    }
+    case GET_CONTACT_BY_ID_FAILURE: {
+      return {
+        ...state,
+        contact: {},
+        contactById: false,
+        contactByIdSuccess: false,
+        contactByIdFailure: action.payload
+      };
+    }
 
+    case UPDATE_CONTACTS_SUCCESS: {
+      return {
+        ...state,
+        updateContactSuccess: true,
+        updateContactFailure: null
+      };
+    }
+
+    case UPDATE_CONTACTS_FAILURE: {
+      return {
+        ...state,
+        updateContactSuccess: false,
+        updateContactFailure: true
+      };
+    }
     default:
       return { ...state };
   }

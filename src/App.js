@@ -10,6 +10,7 @@ import { Fragment } from "react";
 import { Provider } from "react-redux";
 import store from "./redux/store";
 import { AddContact } from "./pages/AddContact";
+import { EditContact } from "./pages/EditContact";
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
           <Route exact path="/" element={<Login />} />
           <Route exact path="/dashboard" element={<Dashboard />} />
           <Route exact path="/add-contact" element={<AddContact />} />
+          <Route exact path="/edit-contact/:id" element={<EditContact />} />
         </Routes>
       </Fragment>
     </Provider>

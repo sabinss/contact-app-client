@@ -73,7 +73,6 @@ export const AddContact = () => {
           initialValues={initialValues}
           validationSchema={AddContactSchema}
           onSubmit={(values, { resetForm }) => {
-            console.log("values", values);
             dispatch(
               createContact(values, (success) => {
                 setContactCreated(true);
