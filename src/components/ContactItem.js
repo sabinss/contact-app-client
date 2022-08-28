@@ -14,12 +14,10 @@ import Profile from "../assets/images/images.png";
 import {
   deleteContact,
   makeFavouriteContact,
-  updateContact,
   updateProfilePic
 } from "../redux/actions/contact";
 
 import { storage_bucket } from "../firebase/firebase";
-
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import Button from "react-bootstrap/esm/Button";
 
@@ -35,6 +33,7 @@ const ContactItem = ({ contact }) => {
   } = contact;
 
   const [markFavourite, setMarkFavourite] = useState(false);
+  const [uploading, setUploading] = useState(false);
 
   const dispatch = useDispatch();
 
@@ -44,6 +43,7 @@ const ContactItem = ({ contact }) => {
     const file = e.target.files[0];
     console.log("type", file.type);
     if (file.type === "	image/jpeg" || file.type === "image/png") {
+      setUploading(true);
       let fileRef = ref(storage_bucket, file.name);
 
       const uploadTask = uploadBytesResumable(fileRef, file);
@@ -57,11 +57,16 @@ const ContactItem = ({ contact }) => {
         },
         (error) => {
           console.log("firebase upload failed");
+          setUploading(false);
         },
         () => {
           getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
             console.log("downloadURL", downloadURL);
-            dispatch(updateProfilePic(_id, downloadURL));
+            dispatch(
+              updateProfilePic(_id, downloadURL, () => {
+                setUploading(false);
+              })
+            );
           });
         }
       );
@@ -85,10 +90,10 @@ const ContactItem = ({ contact }) => {
             />
             <Button
               onClick={() => {
-                fileTypeRef.current.click();
+                !uploading && fileTypeRef.current.click();
               }}
             >
-              Upload Pic
+              {uploading ? "Uploading...." : "Upload Pic"}
             </Button>
 
             <input

@@ -8,6 +8,7 @@ import Button from "react-bootstrap/Button";
 import { useNavigate } from "react-router-dom";
 import Alert from "react-bootstrap/Alert";
 import { RESET_STATE } from "../redux/types";
+import { Pagination } from "../components/Pagination";
 
 export const Dashboard = () => {
   const dispatch = useDispatch();
@@ -15,14 +16,13 @@ export const Dashboard = () => {
 
   const [search, setSearch] = useState("");
 
-  const { loading, contacts, deleteContactSuccess, deleteContact } =
-    useSelector((state) => state.contactReducer);
+  const { loading, contacts, deleteContactSuccess, page } = useSelector(
+    (state) => state.contactReducer
+  );
 
   useEffect(() => {
-    if (contacts.length == 0) {
-      dispatch(fetchContacts());
-    }
-  }, []);
+    dispatch(fetchContacts(page));
+  }, [page]);
 
   useEffect(() => {
     if (deleteContactSuccess) {
@@ -67,9 +67,22 @@ export const Dashboard = () => {
         )}
         <h1 className="large text-primary">Your Contacts</h1>
         <p className="lead">
-          <i className="fab fa-connectdevelop" /> Find your contacts developers
+          <i className="fab fa-connectdevelop" /> Find your contacts
         </p>
         <div
+          class="input-group"
+          style={{ width: 600, marginBottom: 15, marginLeft: 22 }}
+        >
+          <input
+            type="search"
+            class="form-control rounded"
+            placeholder="Search"
+            aria-label="Search"
+            onChange={(event) => setSearch(event.target.value)}
+            aria-describedby="search-addon"
+          />
+        </div>
+        {/* <div
           style={{
             display: "flex",
             justifyContent: "space-between",
@@ -89,7 +102,7 @@ export const Dashboard = () => {
           >
             Add Contact
           </Button>
-        </div>
+        </div> */}
         {contacts && (
           <Contact
             contacts={contacts.filter((contact) =>
@@ -98,6 +111,7 @@ export const Dashboard = () => {
           />
         )}
       </section>
+      <Pagination />
     </div>
   );
 };

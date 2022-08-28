@@ -101,7 +101,15 @@ const Login = ({ isLoading, errMsg = "" }) => {
           Don't have account, Register here.
         </Form.Text>
 
-        <Button variant="primary" type="submit" className="loginBtn">
+        <Button
+          variant="primary"
+          className="loginBtn"
+          onClick={(event) => {
+            console.log("event", event);
+            event.preventDefault();
+            navigate("/signup");
+          }}
+        >
           Register
         </Button>
       </Form>
@@ -113,6 +121,7 @@ Login.prototypes = {
   isLoading: PropTypes.bool
 };
 const mapStateToProps = (state) => {
+  console.log("state", state);
   return {
     isLoading: state.authReducer.loading,
     errMsg: state.authReducer.errMsg

@@ -9,10 +9,16 @@ import NavDropdown from "react-bootstrap/NavDropdown";
 import Button from "react-bootstrap/esm/Button";
 
 import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { RESET_STATE } from "../redux/types";
+import { getLoggedInUser } from "../helper/strings";
 
 const Header = () => {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
+
   const handleLogout = () => {
+    dispatch({ type: RESET_STATE });
     localStorage.removeItem("user");
     navigate("/");
   };
@@ -31,7 +37,7 @@ const Header = () => {
           <Col xs={8}>
             <Row className="align-items-end">
               <Col xs={2}>
-                <h5 className="username">Sabin shrestha</h5>
+                <h5 className="username">{getLoggedInUser().email}</h5>
               </Col>
               <Col xs={10}>
                 <Button onClick={handleLogout}>Logout</Button>

@@ -21,14 +21,32 @@ import {
 
 import axios from "../../api/axios";
 
-export const fetchContacts = () => async (dispatch) => {
-  try {
-    dispatch({ type: LOADING_CONTACTS, payload: true });
-    const response = await axios.get("/api/contacts");
-    dispatch({ type: FETCH_CONTACTS_SUCCESS, payload: response.data.contacts });
-  } catch (err) {
-    dispatch({ type: FETCH_CONTACTS_FAILURE });
-  }
+export const fetchContacts =
+  (page = 1) =>
+  async (dispatch) => {
+    try {
+      dispatch({ type: LOADING_CONTACTS, payload: true });
+      const response = await axios.get(`/api/contacts?page=${page}`);
+      console.log("limit", response.data.limit);
+      dispatch({
+        type: FETCH_CONTACTS_SUCCESS,
+        payload: {
+          contacts: response.data.contacts,
+          limit: response.data.limit,
+          totalRecords: response.data.totalRecord
+        }
+      });
+    } catch (err) {
+      dispatch({ type: FETCH_CONTACTS_FAILURE });
+    }
+  };
+
+export const nextPage = () => (dispatch) => {
+  dispatch({ type: "NEXT_PAGE" });
+};
+
+export const previouspage = () => (dispatch) => {
+  dispatch({ type: "PREVIOUS_PAGE" });
 };
 
 export const createContact = (payload, callback) => async (dispatch) => {
@@ -95,10 +113,10 @@ export const getContactById = (id, callback) => async (dispatch) => {
 export const makeFavouriteContact = (id, isFavourite) => async (dispatch) => {
   try {
     console.log("markFavourite", isFavourite);
-    const response = await axios.post(`/api/contacts/favourite/${id}`, {
+    await axios.post(`/api/contacts/favourite/${id}`, {
       isFavourite
     });
-    console.log("contact favaorte", response.data.contacts);
+    const response = await axios.get("/api/contacts");
     dispatch({
       type: MAKE_FAVOURITE_CONTACT,
       payload: response.data.contacts
@@ -106,15 +124,18 @@ export const makeFavouriteContact = (id, isFavourite) => async (dispatch) => {
   } catch (error) {}
 };
 
-export const updateProfilePic = (id, profileUrl) => async (dispatch) => {
-  try {
-    const response = await axios.put(`/api/contacts/profile/${id}`, {
-      profileUrl
-    });
-    console.log("contact favaorte", response.data.contacts);
-    dispatch({
-      type: UPDATE_PROFILE_PIC,
-      payload: response.data.contacts
-    });
-  } catch (error) {}
-};
+export const updateProfilePic =
+  (id, profileUrl, callback) => async (dispatch) => {
+    try {
+      const response = await axios.put(`/api/contacts/profile/${id}`, {
+        profileUrl
+      });
+      callback();
+      dispatch({
+        type: UPDATE_PROFILE_PIC,
+        payload: response.data.contacts
+      });
+    } catch (error) {
+      callback();
+    }
+  };

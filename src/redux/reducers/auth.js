@@ -1,4 +1,10 @@
-import { LOGIN, LOGIN_FAILUER, LOADING } from "../types";
+import {
+  LOGIN,
+  LOGIN_FAILUER,
+  LOADING,
+  REGISTER_SUCCESS,
+  RESET_STATE
+} from "../types";
 
 const initialState = {
   isAuthenticated: false,
@@ -14,10 +20,22 @@ const authReducer = (state = initialState, action) => {
         ...state,
         isAuthenticated: true,
         user: action.paylaod,
-        errMsg: null
+        errMsg: null,
+        loading: false
       };
 
+    case RESET_STATE: {
+      return {
+        ...state,
+        isAuthenticated: false,
+        user: null,
+        loading: false,
+        errMsg: null
+      };
+    }
+
     case LOGIN_FAILUER:
+      console.log("LOGIN_FAILUER");
       return {
         ...state,
         isAuthenticated: false,
@@ -25,8 +43,17 @@ const authReducer = (state = initialState, action) => {
         errMsg: action.payload
       };
 
+    case REGISTER_SUCCESS:
+      return {
+        ...state,
+        isAuthenticated: true,
+        loading: false,
+        user: action.payload
+      };
+
     case LOADING:
       return { ...state, loading: action.payload };
+
     default:
       return { ...state };
   }

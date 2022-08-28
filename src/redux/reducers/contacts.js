@@ -38,7 +38,12 @@ const initialState = {
 
   updateContact: false,
   updateContactSuccess: false,
-  updateContactFailure: false
+  updateContactFailure: false,
+
+  //for pagination
+  limit: 5,
+  totalRecord: 0,
+  page: 1
 };
 
 const contactReducer = (state = initialState, action) => {
@@ -49,15 +54,29 @@ const contactReducer = (state = initialState, action) => {
     case LOADING_CONTACTS:
       return { ...state, loading: action.payload };
 
+    case "NEXT_PAGE":
+      const nPages = Math.ceil(state.totalRecords / state.limit);
+      const nextPage = state.page >= nPages ? 1 : state.page + 1;
+      return { ...state, page: nextPage };
+
+    case "PREVIOUS_PAGE":
+      const previousPage = state.page <= 0 ? 0 : state.page - 1;
+      return { ...state, page: previousPage };
+
     case FETCH_CONTACTS_SUCCESS:
+      console.log("success", action.payload);
+      const { limit, totalRecords } = action.payload;
       return {
         ...state,
         loading: false,
-        contacts: action.payload.map((contact) => ({
+        contacts: action.payload.contacts.map((contact) => ({
           ...contact,
           isFavourite: contact?.isFavourite ? contact?.isFavourite : false
         })),
         errMsg: null,
+        limit,
+        totalRecords,
+        nPages: Math.ceil(totalRecords / limit),
         deleteContactSuccess: false,
         deleteContact: false
       };
