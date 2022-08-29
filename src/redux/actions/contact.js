@@ -133,7 +133,7 @@ export const updateProfilePic =
       callback();
       dispatch({
         type: UPDATE_PROFILE_PIC,
-        payload: response.data.contacts
+        payload: { id, profileUrl }
       });
     } catch (error) {
       callback();

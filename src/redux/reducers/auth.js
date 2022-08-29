@@ -3,7 +3,8 @@ import {
   LOGIN_FAILUER,
   LOADING,
   REGISTER_SUCCESS,
-  RESET_STATE
+  RESET_STATE,
+  REGISTER_FAILUER
 } from "../types";
 
 const initialState = {
@@ -33,6 +34,9 @@ const authReducer = (state = initialState, action) => {
         errMsg: null
       };
     }
+
+    case REGISTER_FAILUER:
+      return { ...state, loading: false, errMsg: action.payload };
 
     case LOGIN_FAILUER:
       console.log("LOGIN_FAILUER");

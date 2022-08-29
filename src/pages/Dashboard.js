@@ -82,18 +82,13 @@ export const Dashboard = () => {
             aria-describedby="search-addon"
           />
         </div>
-        {/* <div
+        <div
           style={{
             display: "flex",
-            justifyContent: "space-between",
+            justifyContent: "flex-end",
             marginBottom: 20
           }}
         >
-          <input
-            type="text"
-            placeholder="search contact"
-            onChange={(event) => setSearch(event.target.value)}
-          />
           <Button
             variant="primary"
             onClick={() => {
@@ -102,7 +97,7 @@ export const Dashboard = () => {
           >
             Add Contact
           </Button>
-        </div> */}
+        </div>
         {contacts && (
           <Contact
             contacts={contacts.filter((contact) =>

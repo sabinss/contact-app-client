@@ -14,11 +14,13 @@ const Signup = ({ isLoading, errMsg = "" }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [registerSuccess, setRegisterSuccess] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [emailErr, setEmailErr] = useState(null);
   const [passwordErr, setPasswordErr] = useState(null);
+  const [registrationFailed, setRegisterFailed] = useState(false);
 
   function validateEmail(email) {
     var re = /\S+@\S+\.\S+/;
@@ -36,12 +38,23 @@ const Signup = ({ isLoading, errMsg = "" }) => {
       setEmailErr("Please enter Email");
     }
     if (email && password) {
+      setLoading(true);
       dispatch(
-        signup({ email, password }, () => {
-          setRegisterSuccess(true);
-          setTimeout(() => {
-            setRegisterSuccess(false);
-          }, 3000);
+        signup({ email, password }, (success) => {
+          console.log("register", success);
+          if (success) {
+            setLoading(false);
+            setRegisterSuccess(true);
+            setTimeout(() => {
+              setRegisterSuccess(false);
+            }, 3000);
+          } else {
+            setLoading(false);
+            setRegisterFailed(true);
+            setTimeout(() => {
+              setRegisterFailed(false);
+            }, 3000);
+          }
         })
       );
     }
@@ -52,12 +65,11 @@ const Signup = ({ isLoading, errMsg = "" }) => {
   };
   return (
     <div className="loginForm">
-      {errMsg ? (
+      {registrationFailed ? (
         <Alert key={"danger"} variant={"danger"}>
           {errMsg}
         </Alert>
       ) : null}
-
       {registerSuccess && (
         <Alert key={"success"} variant={"success"}>
           Registration is successfull.Please navigate to login page for Login.
@@ -100,7 +112,7 @@ const Signup = ({ isLoading, errMsg = "" }) => {
           onClick={onSubmit}
         >
           Register
-          {isLoading && <Spinner animation="border" />}
+          {loading && <Spinner animation="border" />}
         </Button>
         <Form.Text className="text-muted">Go Back to Login Page</Form.Text>
 

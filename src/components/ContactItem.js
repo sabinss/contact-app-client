@@ -41,8 +41,8 @@ const ContactItem = ({ contact }) => {
 
   const uploadFile = (e) => {
     const file = e.target.files[0];
-    console.log("type", file.type);
-    if (file.type === "	image/jpeg" || file.type === "image/png") {
+    console.log("type", file.type, file.type === "	image/jpeg");
+    if (file.type === "image/jpeg" || file.type === "image/png") {
       setUploading(true);
       let fileRef = ref(storage_bucket, file.name);
 

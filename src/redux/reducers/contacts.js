@@ -194,9 +194,13 @@ const contactReducer = (state = initialState, action) => {
       };
     }
     case UPDATE_PROFILE_PIC: {
+      const contacts = [...state.contacts];
+      const { profileUrl, id } = action.payload;
+      const index = state.contacts.findIndex((x) => x._id === id);
+      contacts[index]["profileUrl"] = profileUrl;
       return {
         ...state,
-        contacts: [...action.payload]
+        contacts: [...contacts]
       };
     }
     default:
